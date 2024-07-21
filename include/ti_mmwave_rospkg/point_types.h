@@ -57,6 +57,9 @@ struct PointXYZIVR
   // range in cartesian
   float range;
 
+  float bearing;
+  float doppler_bin;
+
   // ensure proper alignment
   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 } EIGEN_ALIGN16;  // NOLINT
@@ -69,6 +72,8 @@ POINT_CLOUD_REGISTER_POINT_STRUCT(radar_pcl::PointXYZIVR,
                                   (float, intensity, intensity)
                                   (float, velocity, velocity)
                                   (float, range, range)
+                                  (float, bearing, bearing)
+                                  (float, doppler_bin, doppler_bin)
                                   )
 
 #endif  // TI_MMWAVE_ROSPKG_POINT_TYPES_H

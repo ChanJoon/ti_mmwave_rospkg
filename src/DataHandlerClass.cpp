@@ -387,6 +387,8 @@ void *DataUARTHandler::sortIncomingData(void)
           RScan->points[i].velocity = mmwData.objOut_cartes.velocity;
           RScan->points[i].range =
               sqrt(pow(RScan->points[i].x, 2) + pow(RScan->points[i].y, 2) + pow(RScan->points[i].z, 2));
+          RScan->points[i].bearing = std::atan2(-mmwData.objOut_cartes.x, mmwData.objOut_cartes.y) / M_PI * 180;
+          RScan->points[i].doppler_bin = (uint16_t)(mmwData.detList.dopplerIdx + nd / 2);
 
           // Increase counter
           i++;
