@@ -9,6 +9,7 @@
 DataUARTHandler::DataUARTHandler(ros::NodeHandle *nh) : currentBufp(&pingPongBuffers[0]), nextBufp(&pingPongBuffers[1])
 {
   DataUARTHandler_pub = nh->advertise<sensor_msgs::PointCloud2>("radar_scan_pcl", 100);
+  radar_scan_pub = nh->advertise<ti_mmwave_rospkg::RadarScan>("radar_scan", 100);
   maxAllowedElevationAngleDeg = 90;  // Use max angle if none specified
   maxAllowedAzimuthAngleDeg = 90;    // Use max angle if none specified
 
@@ -390,6 +391,21 @@ void *DataUARTHandler::sortIncomingData(void)
           RScan->points[i].bearing = std::atan2(-mmwData.objOut_cartes.x, mmwData.objOut_cartes.y) / M_PI * 180;
           RScan->points[i].doppler_bin = (uint16_t)(mmwData.detList.dopplerIdx + nd / 2);
 
+          radarscan.header.frame_id = frameID;
+          radarscan.header.stamp = ros::Time::now();
+          radarscan.point_id = i;
+          radarscan.x = RScan->points[i].x;
+          radarscan.y = RScan->points[i].y;
+          radarscan.z = RScan->points[i].z;
+          radarscan.range = RScan->points[i].range;
+          radarscan.velocity = RScan->points[i].velocity;
+          radarscan.doppler_bin = RScan->points[i].doppler_bin;
+          radarscan.bearing = RScan->points[i].bearing;
+          // For SDK 3.x, intensity is replaced by snr in
+          // sideInfo and is parsed in the READ_SIDE_INFO code
+          // (divide by 10 since unit of snr is 0.1dB)
+          // by Claud1234
+
           // Increase counter
           i++;
         }
@@ -414,6 +430,7 @@ void *DataUARTHandler::sortIncomingData(void)
 
             // Use snr for "intensity" field (divide by 10 since unit of snr is 0.1dB)
             RScan->points[i].intensity = mmwData.sideInfo.snr / 10.0;
+            radarscan.intensity = (float) mmwData.sideInfo.snr / 10.0;
           }
         }
         else
@@ -456,6 +473,7 @@ void *DataUARTHandler::sortIncomingData(void)
           if (mmwData.numObjOut > 0)
           {
             DataUARTHandler_pub.publish(RScan);
+            radar_scan_pub.publish(radarscan);
           }
 
           sorterState = SWAP_BUFFERS;

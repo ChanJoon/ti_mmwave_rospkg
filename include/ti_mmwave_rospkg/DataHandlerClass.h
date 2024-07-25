@@ -176,6 +176,7 @@ private:
   ros::NodeHandle* nodeHandle;
 
   ros::Publisher DataUARTHandler_pub;
+  ros::Publisher radar_scan_pub;
 };
 
 #endif  // TI_MMWAVE_ROSPKG_DATAHANDLERCLASS_H
