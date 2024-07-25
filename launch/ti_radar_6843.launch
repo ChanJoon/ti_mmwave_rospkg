@@ -1,33 +1,28 @@
 <launch>
   <!-- Input arguments -->
   <arg name="log_output" default="screen"/>
-  <arg name="radar_type" default="6843AOP" doc="[1843AOP, 6843AOP]"/>
   <arg name="radar_frame_id" default="ti_mmwave"/>
 
   <!-- visualization-->
-  <arg name="visualize" value="True"/>
+  <arg name="visualize" value="False"/>
 
   <!-- ********************* -->
   <!-- **** RADAR      ***** -->
   <!-- ********************* -->
-  <group if="$(eval radar_type == '6843AOP')">
-    <!-- 1. mmWaveQuickConfig node (terminates after configuring mmWave sensor) -->
-    <node pkg="ti_mmwave_rospkg" type="mmWaveQuickConfig" name="mmWaveQuickConfig"
-          args="$(find ti_mmwave_rospkg)/cfg/6843AOP/6843AOP_maxRange_18_maxDoppler_39249_dopplerResol_0245.cfg" output="$(arg log_output)"/>
-    <!-- <node pkg="ti_mmwave_rospkg" type="mmWaveQuickConfig" name="mmWaveQuickConfig"
-          args="$(find ti_mmwave_rospkg)/cfg/6843AOP/6843AOP_maxRange_13_maxDoppler_31478_dopplerResol_005.cfg" output="$(arg log_output)"/> -->
+  <!-- 1. mmWaveQuickConfig node (terminates after configuring mmWave sensor) -->
+  <node pkg="ti_mmwave_rospkg" type="mmWaveQuickConfig" name="mmWaveQuickConfig"
+        args="$(find ti_mmwave_rospkg)/cfg/6843AOP/6843AOP_maxRange_40_maxDoppler_3999_dopplerResol_0249.cfg" output="$(arg log_output)"/>
 
-    <!-- 2. the actual radar node -->
-    <node pkg="ti_mmwave_rospkg" type="ti_mmwave_rospkg" name="ti_mmwave" output="$(arg log_output)">
-      <param name="command_port" value="/dev/ttyUSB0"/>
-      <param name="command_rate" value="115200"/>
-      <param name="data_port" value="/dev/ttyUSB1"/>
-      <param name="data_rate" value="921600"/>
-      <!-- <param name="max_allowed_elevation_angle_deg" value="$(arg max_allowed_elevation_angle_deg)"/> -->
-      <!-- <param name="max_allowed_azimuth_angle_deg" value="$(arg max_allowed_azimuth_angle_deg)"/> -->
-      <param name="frame_id" value="$(arg radar_frame_id)"/>
-    </node>
-  </group>
+  <!-- 2. the actual radar node -->
+  <node pkg="ti_mmwave_rospkg" type="ti_mmwave_rospkg" name="ti_mmwave" output="$(arg log_output)">
+    <param name="command_port" value="/dev/ttyUSB0"/>
+    <param name="command_rate" value="115200"/>
+    <param name="data_port" value="/dev/ttyUSB1"/>
+    <param name="data_rate" value="921600"/>
+    <!-- <param name="max_allowed_elevation_angle_deg" value="$(arg max_allowed_elevation_angle_deg)"/> -->
+    <!-- <param name="max_allowed_azimuth_angle_deg" value="$(arg max_allowed_azimuth_angle_deg)"/> -->
+    <param name="frame_id" value="$(arg radar_frame_id)"/>
+  </node>
 
 
   <!-- ********************* -->
